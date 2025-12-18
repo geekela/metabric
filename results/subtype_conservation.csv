@@ -1,0 +1,13 @@
+n_subtypes,n,method,category
+1,5865,MIIC,Subtype-specific
+2,2750,MIIC,Partial (2)
+3,1094,MIIC,Conserved (3+)
+4,424,MIIC,Universal
+1,1702,GENIE3,Subtype-specific
+2,375,GENIE3,Partial (2)
+3,137,GENIE3,Conserved (3+)
+4,10,GENIE3,Universal
+1,3085,ARACNE,Subtype-specific
+2,366,ARACNE,Partial (2)
+3,57,ARACNE,Conserved (3+)
+4,3,ARACNE,Universal

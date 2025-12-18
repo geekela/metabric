@@ -1,8 +1,8 @@
-# =============================================================================
+
 # 02c_run_aracne.R
 # Run ARACNE network inference on each breast cancer subtype
 # Uses the minet package implementation
-# =============================================================================
+
 
 library(tidyverse)
 library(minet)
@@ -10,9 +10,9 @@ library(infotheo)
 
 cat("=== ARACNE Network Inference ===\n\n")
 
-# -----------------------------------------------------------------------------
+
 # 1. Load Preprocessed Data
-# -----------------------------------------------------------------------------
+
 
 expr_by_subtype <- readRDS("data/expr_by_subtype.rds")
 
@@ -22,9 +22,7 @@ for (st in names(expr_by_subtype)) {
       ncol(expr_by_subtype[[st]]), "genes\n")
 }
 
-# -----------------------------------------------------------------------------
-# 2. ARACNE Parameters
-# -----------------------------------------------------------------------------
+# 2. ARACNE Parameters  
 
 # Configuration
 MAX_GENES <- 200        # Max genes to analyze
@@ -39,9 +37,7 @@ cat("  Max samples:", SAMPLE_CAP, "\n")
 cat("  Discretization bins:", N_BINS, "\n")
 cat("  MI estimator:", MI_ESTIMATOR, "\n")
 
-# -----------------------------------------------------------------------------
 # 3. Run ARACNE on Each Subtype
-# -----------------------------------------------------------------------------
 
 run_aracne_subtype <- function(expr_df, subtype_name, max_genes = 200, 
                                 sample_cap = 500, n_bins = 10, top_edges = 1000) {
@@ -126,12 +122,16 @@ run_aracne_subtype <- function(expr_df, subtype_name, max_genes = 200,
 
 # Run on all subtypes
 aracne_results <- list()
+
+# Map to lowercase names to match MIIC online output
+subtype_map <- c("LumA" = "luma", "LumB" = "lumb", "Her2" = "her2", "Basal" = "basal")
 subtypes <- names(expr_by_subtype)
 
 for (st in subtypes) {
-  aracne_results[[st]] <- run_aracne_subtype(
+  st_lower <- ifelse(st %in% names(subtype_map), subtype_map[st], tolower(st))
+  aracne_results[[st_lower]] <- run_aracne_subtype(
     expr_by_subtype[[st]], 
-    st,
+    st_lower,
     max_genes = MAX_GENES,
     sample_cap = SAMPLE_CAP,
     n_bins = N_BINS,
@@ -139,9 +139,7 @@ for (st in subtypes) {
   )
 }
 
-# -----------------------------------------------------------------------------
-# 4. Combine and Format Edges
-# -----------------------------------------------------------------------------
+# 4. Combine and Format Edges 
 
 cat("\n\n=== Edge Summary ===\n")
 
@@ -149,7 +147,7 @@ cat("\n\n=== Edge Summary ===\n")
 all_edges <- bind_rows(lapply(names(aracne_results), function(st) {
   edges <- aracne_results[[st]]
   if (is.null(edges) || nrow(edges) == 0) return(data.frame())
-  
+
   edges %>%
     mutate(
       subtype = st,
@@ -163,9 +161,9 @@ cat("\nTotal edges across all subtypes:", nrow(all_edges), "\n")
 cat("Edges per subtype:\n")
 print(table(all_edges$subtype))
 
-# -----------------------------------------------------------------------------
+
 # 5. Save Results
-# -----------------------------------------------------------------------------
+
 
 # Save raw results
 saveRDS(aracne_results, "results/aracne_results.rds")

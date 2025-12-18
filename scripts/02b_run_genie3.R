@@ -1,16 +1,16 @@
-# =============================================================================
+
 # 02b_run_genie3.R
 # Run GENIE3 network inference on each breast cancer subtype
-# =============================================================================
+
 
 library(tidyverse)
 library(GENIE3)
 
 cat("=== GENIE3 Network Inference ===\n\n")
 
-# -----------------------------------------------------------------------------
+
 # 1. Load Preprocessed Data
-# -----------------------------------------------------------------------------
+
 
 expr_by_subtype <- readRDS("data/expr_by_subtype.rds")
 
@@ -20,9 +20,9 @@ for (st in names(expr_by_subtype)) {
       ncol(expr_by_subtype[[st]]), "genes\n")
 }
 
-# -----------------------------------------------------------------------------
+
 # 2. GENIE3 Parameters
-# -----------------------------------------------------------------------------
+
 
 # Configuration
 N_TREES <- 100          # Number of trees per gene (default 1000, reduced for speed)
@@ -37,9 +37,9 @@ cat("  Max genes:", MAX_GENES, "\n")
 cat("  Max samples:", SAMPLE_CAP, "\n")
 cat("  Cores:", N_CORES, "\n")
 
-# -----------------------------------------------------------------------------
+
 # 3. Run GENIE3 on Each Subtype
-# -----------------------------------------------------------------------------
+
 
 run_genie3_subtype <- function(expr_df, subtype_name, n_trees = 100, 
                                 max_genes = 200, sample_cap = 500, top_edges = 1000) {
@@ -107,12 +107,16 @@ run_genie3_subtype <- function(expr_df, subtype_name, n_trees = 100,
 
 # Run on all subtypes
 genie3_results <- list()
+
+# Map to lowercase names to match MIIC online output
+subtype_map <- c("LumA" = "luma", "LumB" = "lumb", "Her2" = "her2", "Basal" = "basal")
 subtypes <- names(expr_by_subtype)
 
 for (st in subtypes) {
-  genie3_results[[st]] <- run_genie3_subtype(
+  st_lower <- ifelse(st %in% names(subtype_map), subtype_map[st], tolower(st))
+  genie3_results[[st_lower]] <- run_genie3_subtype(
     expr_by_subtype[[st]], 
-    st,
+    st_lower,
     n_trees = N_TREES,
     max_genes = MAX_GENES,
     sample_cap = SAMPLE_CAP,
@@ -120,9 +124,9 @@ for (st in subtypes) {
   )
 }
 
-# -----------------------------------------------------------------------------
+
 # 4. Combine and Format Edges
-# -----------------------------------------------------------------------------
+
 
 cat("\n\n=== Edge Summary ===\n")
 
@@ -144,9 +148,9 @@ cat("\nTotal edges across all subtypes:", nrow(all_edges), "\n")
 cat("Edges per subtype:\n")
 print(table(all_edges$subtype))
 
-# -----------------------------------------------------------------------------
+
 # 5. Save Results
-# -----------------------------------------------------------------------------
+
 
 # Save raw results
 saveRDS(genie3_results, "results/genie3_results.rds")

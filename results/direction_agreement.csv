@@ -1,0 +1,5 @@
+subtype,miic_directed,same_direction,opposite_direction,edge_overlap
+basal,57,23,30,31
+her2,62,21,35,35
+luma,150,42,52,55
+lumb,81,33,40,41

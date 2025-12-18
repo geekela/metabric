@@ -1,7 +1,7 @@
-# =============================================================================
+
 # 04_visualize.R
 # Generate visualizations for multi-method network comparison
-# =============================================================================
+
 
 library(tidyverse)
 library(igraph)
@@ -19,9 +19,7 @@ method_colors <- c("MIIC" = "#E41A1C", "GENIE3" = "#377EB8", "ARACNE" = "#4DAF4A
 subtype_colors <- c("LumA" = "#1B9E77", "LumB" = "#D95F02", 
                     "Her2" = "#7570B3", "Basal" = "#E7298A")
 
-# -----------------------------------------------------------------------------
 # 1. Load Results
-# -----------------------------------------------------------------------------
 
 all_edges <- read_csv("results/all_edges_combined.csv", show_col_types = FALSE)
 method_agreement <- read_csv("results/method_agreement.csv", show_col_types = FALSE)
@@ -33,9 +31,7 @@ network_stats <- read_csv("results/network_stats.csv", show_col_types = FALSE)
 methods <- unique(all_edges$method)
 subtypes <- unique(all_edges$subtype)
 
-# -----------------------------------------------------------------------------
 # 2. Network Size Comparison (Method x Subtype)
-# -----------------------------------------------------------------------------
 
 cat("Creating network size comparison...\n")
 
@@ -55,9 +51,7 @@ p1 <- network_stats %>%
 ggsave("figures/01_network_size_comparison.pdf", p1, width = 10, height = 6)
 ggsave("figures/01_network_size_comparison.png", p1, width = 10, height = 6, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 3. Method Agreement Heatmap
-# -----------------------------------------------------------------------------
 
 cat("Creating method agreement heatmap...\n")
 
@@ -95,9 +89,7 @@ pheatmap(
 )
 dev.off()
 
-# -----------------------------------------------------------------------------
 # 4. Consensus Edges Bar Plot
-# -----------------------------------------------------------------------------
 
 cat("Creating consensus edges plot...\n")
 
@@ -120,9 +112,7 @@ p2 <- ggplot(consensus_summary, aes(x = subtype, y = n, fill = n_methods)) +
 ggsave("figures/03_consensus_edges.pdf", p2, width = 8, height = 5)
 ggsave("figures/03_consensus_edges.png", p2, width = 8, height = 5, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 5. Hub Gene Comparison Heatmap
-# -----------------------------------------------------------------------------
 
 cat("Creating hub gene heatmap...\n")
 
@@ -165,9 +155,7 @@ pheatmap(
 )
 dev.off()
 
-# -----------------------------------------------------------------------------
 # 6. Degree Distribution by Method
-# -----------------------------------------------------------------------------
 
 cat("Creating degree distribution plots...\n")
 
@@ -186,9 +174,7 @@ p3 <- hub_metrics %>%
 ggsave("figures/05_degree_distribution.pdf", p3, width = 12, height = 10)
 ggsave("figures/05_degree_distribution.png", p3, width = 12, height = 10, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 7. Average Degree Comparison
-# -----------------------------------------------------------------------------
 
 cat("Creating average degree comparison...\n")
 
@@ -207,9 +193,7 @@ p4 <- network_stats %>%
 ggsave("figures/06_avg_degree_comparison.pdf", p4, width = 10, height = 6)
 ggsave("figures/06_avg_degree_comparison.png", p4, width = 10, height = 6, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 8. Method Comparison Radar/Summary
-# -----------------------------------------------------------------------------
 
 cat("Creating method summary plot...\n")
 
@@ -241,9 +225,7 @@ p5 <- method_summary %>%
 ggsave("figures/07_method_summary.pdf", p5, width = 10, height = 8)
 ggsave("figures/07_method_summary.png", p5, width = 10, height = 8, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 9. Top Hubs per Method (Bar Plot)
-# -----------------------------------------------------------------------------
 
 cat("Creating top hubs bar plot...\n")
 
@@ -271,9 +253,7 @@ p6 <- ggplot(top_10_per_method, aes(x = reorder(gene, total_degree),
 ggsave("figures/08_top_hubs_per_method.pdf", p6, width = 12, height = 8)
 ggsave("figures/08_top_hubs_per_method.png", p6, width = 12, height = 8, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 10. Edge Overlap Visualization (UpSet-style)
-# -----------------------------------------------------------------------------
 
 cat("Creating edge overlap summary...\n")
 
@@ -300,9 +280,7 @@ p7 <- ggplot(overlap_summary, aes(x = reorder(methods, n), y = n, fill = factor(
 ggsave("figures/09_edge_overlap.pdf", p7, width = 10, height = 6)
 ggsave("figures/09_edge_overlap.png", p7, width = 10, height = 6, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # 11. Summary Figure
-# -----------------------------------------------------------------------------
 
 cat("Creating summary figure...\n")
 
@@ -324,9 +302,7 @@ p8 <- network_stats %>%
 ggsave("figures/10_nodes_vs_edges.pdf", p8, width = 10, height = 6)
 ggsave("figures/10_nodes_vs_edges.png", p8, width = 10, height = 6, dpi = 150)
 
-# -----------------------------------------------------------------------------
 # Done
-# -----------------------------------------------------------------------------
 
 cat("\n=== Visualization Complete ===\n")
 cat("\nFigures saved in figures/ folder:\n")

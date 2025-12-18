@@ -1,16 +1,16 @@
-# =============================================================================
+
 # 03_compare_networks.R
 # Compare networks across methods (MIIC, GENIE3, ARACNE) and subtypes
-# =============================================================================
+
 
 library(tidyverse)
 library(igraph)
 
 cat("=== Multi-Method Network Comparison ===\n\n")
 
-# -----------------------------------------------------------------------------
+
 # 1. Load Results from All Methods
-# -----------------------------------------------------------------------------
+
 
 cat("Loading edge lists from all methods...\n")
 
@@ -68,9 +68,9 @@ print(table(all_edges$method, all_edges$subtype))
 # Save combined edges
 write_csv(all_edges, "results/all_edges_combined.csv")
 
-# -----------------------------------------------------------------------------
+
 # 2. Cross-Method Agreement (per subtype)
-# -----------------------------------------------------------------------------
+
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("CROSS-METHOD AGREEMENT\n")
@@ -122,9 +122,9 @@ for (st in subtypes) {
 
 write_csv(method_agreement, "results/method_agreement.csv")
 
-# -----------------------------------------------------------------------------
+
 # 3. Consensus Edges (found by multiple methods)
-# -----------------------------------------------------------------------------
+
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("CONSENSUS EDGES\n")
@@ -159,9 +159,9 @@ print(table(high_conf_edges$subtype))
 write_csv(edge_method_count, "results/edge_method_count.csv")
 write_csv(consensus_edges, "results/consensus_edges.csv")
 
-# -----------------------------------------------------------------------------
+
 # 4. Cross-Subtype Conservation (per method)
-# -----------------------------------------------------------------------------
+
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("CROSS-SUBTYPE CONSERVATION\n")
@@ -203,9 +203,9 @@ for (m in methods) {
 
 write_csv(subtype_conservation, "results/subtype_conservation.csv")
 
-# -----------------------------------------------------------------------------
+
 # 5. Hub Gene Analysis (per method and subtype)
-# -----------------------------------------------------------------------------
+
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("HUB GENE ANALYSIS\n")
@@ -262,9 +262,8 @@ print(hub_wide %>% head(20) %>% select(gene, total_degree, max_degree, n_network
 write_csv(hub_metrics, "results/hub_metrics_all.csv")
 write_csv(hub_wide, "results/hub_comparison.csv")
 
-# -----------------------------------------------------------------------------
+
 # 6. Method Agreement on Hub Genes
-# -----------------------------------------------------------------------------
 
 cat("\n--- Hub Agreement Across Methods ---\n")
 
@@ -292,9 +291,7 @@ print(hub_overlap)
 
 write_csv(hub_overlap, "results/hub_overlap.csv")
 
-# -----------------------------------------------------------------------------
 # 7. Known Driver Gene Analysis
-# -----------------------------------------------------------------------------
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("KNOWN DRIVER GENE ANALYSIS\n")
@@ -332,9 +329,7 @@ if (length(drivers_found) > 0) {
   write_csv(driver_summary, "results/driver_gene_analysis.csv")
 }
 
-# -----------------------------------------------------------------------------
 # 8. Network Statistics Summary
-# -----------------------------------------------------------------------------
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("NETWORK STATISTICS\n")
@@ -369,9 +364,9 @@ print(network_stats)
 
 write_csv(network_stats, "results/network_stats.csv")
 
-# -----------------------------------------------------------------------------
+
 # 9. Summary Report
-# -----------------------------------------------------------------------------
+
 
 cat("\n", paste(rep("=", 60), collapse = ""), "\n")
 cat("SUMMARY REPORT\n")

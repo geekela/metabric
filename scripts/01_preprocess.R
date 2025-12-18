@@ -1,15 +1,14 @@
-# =============================================================================
+
 # 01_preprocess.R
 # Load and preprocess METABRIC data for MIIC network inference
-# =============================================================================
+
 
 library(tidyverse)
 
 cat("=== METABRIC Data Preprocessing ===\n\n")
 
-# -----------------------------------------------------------------------------
+
 # 1. Load Data
-# -----------------------------------------------------------------------------
 
 data_path <- "data/METABRIC_RNA_Mutation.csv"
 
@@ -20,9 +19,9 @@ if (!file.exists(data_path)) {
 df <- read_csv(data_path, show_col_types = FALSE)
 cat("Loaded data:", nrow(df), "samples x", ncol(df), "columns\n")
 
-# -----------------------------------------------------------------------------
+
 # 2. Identify Column Types
-# -----------------------------------------------------------------------------
+
 
 # Clinical columns (first ~31 columns based on Kaggle dataset structure)
 clinical_cols <- c(
@@ -49,9 +48,8 @@ cat("  Gene expression:", length(gene_cols), "\n
 ")
 cat("  Mutation:", length(mutation_cols), "\n")
 
-# -----------------------------------------------------------------------------
 # 3. Extract and Clean Expression Data
-# -----------------------------------------------------------------------------
+
 
 # Extract expression matrix
 expr_df <- df %>% select(all_of(gene_cols))
@@ -67,9 +65,9 @@ if (!all(numeric_check)) {
 
 cat("\nExpression matrix:", nrow(expr_df), "samples x", ncol(expr_df), "genes\n")
 
-# -----------------------------------------------------------------------------
+
 # 4. Handle Missing Values
-# -----------------------------------------------------------------------------
+
 
 # Check NA proportion per gene
 na_prop <- colMeans(is.na(expr_df))
@@ -85,12 +83,12 @@ cat("\nGenes after NA filter:", ncol(expr_df), "\n")
 expr_df <- expr_df %>%
   mutate(across(everything(), ~ifelse(is.na(.), median(., na.rm = TRUE), .)))
 
-# -----------------------------------------------------------------------------
-# 5. Variance Filtering
-# -----------------------------------------------------------------------------
 
-# Keep top N most variable genes (MIIC can't handle thousands efficiently)
-N_GENES <- 300  # Adjust based on computational resources
+# 5. Variance Filtering
+
+
+# Keep top N most variable genes 
+N_GENES <- 300  
 
 gene_var <- apply(expr_df, 2, var, na.rm = TRUE)
 top_genes <- names(sort(gene_var, decreasing = TRUE))[1:min(N_GENES, length(gene_var))]
@@ -98,9 +96,9 @@ top_genes <- names(sort(gene_var, decreasing = TRUE))[1:min(N_GENES, length(gene
 expr_filtered <- expr_df %>% select(all_of(top_genes))
 cat("\nAfter variance filter: top", ncol(expr_filtered), "genes\n")
 
-# -----------------------------------------------------------------------------
+
 # 6. Extract Clinical Info and Subtypes
-# -----------------------------------------------------------------------------
+ 
 
 # Get subtype column (handle different possible names)
 subtype_col <- "pam50_+_claudin-low_subtype"
@@ -140,9 +138,9 @@ clinical_df <- clinical_df %>%
 cat("\nCleaned subtype distribution:\n")
 print(table(clinical_df$subtype_clean, useNA = "ifany"))
 
-# -----------------------------------------------------------------------------
+
 # 7. Split Expression by Subtype
-# -----------------------------------------------------------------------------
+
 
 # Add patient_id to expression data
 expr_with_id <- bind_cols(
@@ -166,9 +164,9 @@ for (st in subtypes_to_analyze) {
   cat(st, ":", nrow(expr_by_subtype[[st]]), "samples\n")
 }
 
-# -----------------------------------------------------------------------------
+
 # 8. Save Processed Data
-# -----------------------------------------------------------------------------
+
 
 # Save full filtered expression
 saveRDS(expr_filtered, "data/expr_filtered.rds")
