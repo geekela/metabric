@@ -1,0 +1,7 @@
+"method","comparison","inferred_edges","reference_in_scope","TP","FP","FN","precision","recall","F1"
+"MIIC","undirected",10133,217,69,10064,148,0.0068,0.318,0.0133
+"GENIE3","undirected",2224,206,15,2209,191,0.0067,0.0728,0.0123
+"ARACNE","undirected",3511,205,18,3493,187,0.0051,0.0878,0.0097
+"GENIE3 (directed)","directed",3069,213,10,3059,203,0.0033,0.0469,0.0061
+"MIIC (causal)","directed",329,128,1,328,127,0.003,0.0078,0.0044
+"3-Method Consensus","undirected",963,113,9,954,104,0.0093,0.0796,0.0167
